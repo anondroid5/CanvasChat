@@ -5,6 +5,8 @@ HTML5 Canvas
 
 <img src="./Raw/images/index.png" alt="index">
 
+<img src="./Raw/images/chat.png" alt="chat">
+
 #Environment
 Java8 (jdk1.8.0_05)
 
