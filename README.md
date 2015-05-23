@@ -13,6 +13,7 @@ Apache Maven 3.0.2
 http://mvnrepository.com/
 
 #Ideas
+  いつも一人でやっていると、失敗のリスクが高くなる。そして、成長の可能性が低くなる。  
 
 #Author
 Fumihiko Akagi
