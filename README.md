@@ -46,5 +46,8 @@ Fumihiko Akagi
 
 #Copyright
 ###!!使用する際はライセンスを読んで使用してください!!
+    本ソフトウェアは、独断と個人による利用を固く禁じます。
+    
+    
     Copyright (c) 2013 Fumihiko Akagi
 
