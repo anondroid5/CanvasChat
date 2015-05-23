@@ -9,5 +9,6 @@ HTML5 Canvas
 Fumihiko Akagi
 
 #Copyright
+###!!使用する際はライセンスを読んで使用してください!!
 
 
