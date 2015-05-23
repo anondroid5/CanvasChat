@@ -1,0 +1,154 @@
+@CHARSET "UTF-8";
+
+body{
+	width:1600px;
+}
+
+/**
+ * 共通タイトルバー
+ */
+.titleBar{
+	background-color: #30A8C3;
+	text-align: center;
+	color: #ffffff;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-weight: bold;
+	border-radius:5px 5px 0px 0px / 5px 5px 0px 0px;
+}
+
+/**
+ * 共通フレーム
+ */
+.frame{
+	border: 1px solid #999;
+}
+
+/**
+ * カラーピッカー
+ */
+#color{
+	width: 240px;
+
+}
+
+#layer{
+	width: 130px;
+}
+
+#layerSelect{
+	height: 120px;
+}
+
+.colorCell{
+	width: 14px;
+	height: 14px;
+}
+/**
+ * レイヤー配置
+ */
+#canvas{
+	position: relative;
+	width: 1200px;
+	height: 675px;
+	border: 1px solid #000000;
+    cursor:crosshair;
+    overflow:hidden;
+}
+#canvas canvas{
+	position: absolute;
+	moz-transform-origin:0 0;
+    -ms-transform-origin:0 0;
+    -webkit-transform-origin:0 0;
+    transform-origin:0 0;
+	border: 1px solid #000000;
+
+}
+
+canvas{
+	background-color: transparent;
+	
+}
+/**
+ * 各ペイン
+ */
+#leftPain{
+	float: left;
+}
+#centerPain{
+	float: left;
+}
+#rightPain{
+	float: left;
+}
+/**
+ * カラーピッカー
+ */
+.colorTitle{
+	float:left;
+}
+.colorSlider{
+	float: left;
+	width: 60%;
+	margin-left: 10px;
+	margin-right: 20px;
+}
+.colorSliderGroup{
+	padding-bottom: 5px;
+}
+
+#colorSelect{
+	float: left;
+}
+#currentColor{
+	width: 40px;
+	height: 40px;
+}
+
+/**
+ * チャットエリア
+ */
+#chatArea{
+	width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+}
+/**
+ * メッセージエリア
+ */
+#messageArea{
+	width: 90%;
+	float: left;
+}
+
+#participantList{
+	width: 10%;
+}
+
+#messages{
+	width: 100%;
+}
+
+.layerAlphaSlider{
+	width: 80%;
+	height: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/**
+ *
+ */
+.penWidthItem{
+	border: 2px solid #000000;
+	width: 70px;
+	float: left;
+	text-align: center;
+}
+
+.penWidthItemSelect{
+	border: 2px solid #0000ff;
+	width: 70px;
+	float: left;
+	text-align: center;
+}

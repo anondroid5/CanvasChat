@@ -1,0 +1,28 @@
+@CHARSET "UTF-8";
+
+img{
+	min-height:100%;
+	min-width:1024px;
+	width:100%;
+	height:auto;
+	position:fixed;
+	top:0;
+	left:0;
+}
+#loginBlock{
+	border-radius: 10px;
+	border: 2px solid #999;
+	width: 260px;
+	padding: 10px 10px 10px 10px;
+	margin-left : auto; margin-right : auto ;
+	margin-top:15%;
+    background:#ffffff;
+    position: relative;
+}
+
+#title{
+	text-align: center;
+}
+#discription{
+	text-align: center;
+}

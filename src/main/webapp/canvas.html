@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Doodle</title>
+   	<script src="./js/jquery-latest.min.js"></script>
+	<script src="./js/hammer.min.js"></script>
+	<style>
+		#main{
+			text-align:center;
+		}
+		#CanvasDiv{
+			border: 5px solid #999;
+    		cursor:crosshair;
+    		width:1400px;
+    		height:800px;
+    		float:left;
+    		overflow: hidden;
+    		margin-right:5px;
+		}
+		#mycanvas{
+    		-moz-transform-origin:0 0;
+    		-ms-transform-origin:0 0;
+    		-webkit-transform-origin:0 0;
+    		transform-origin:0 0;
+		}
+		#Chat{
+			border: 3px solid #999;
+			width:400px;
+			height:800px;
+			float:left;
+			margin-left:5px;
+		}
+		#message{
+			width: 280px;
+		}
+		#log{
+			overflow-y:scroll;
+			width:370px;
+			height:760px;
+			border: 2px solid #999;
+		}
+		li{
+			border: 2px solid #999;
+			border-radius: 4px;
+			list-style: none;
+			padding:5px;
+			margin-right:40px;
+		}
+		#gallery{
+			clear:left;
+			width:1620px;
+		}
+		.thumbnail{
+			margin:3px;
+			border: 2px solid #999;
+		}
+	</style>
+</head>
+<body>
+	<div id="menu">
+		<p>
+			<select id="penColor">
+				<option value="black">黒</option>
+				<option value="red">赤</option>
+				<option value="blue">青</option>
+				<option value="white">白</option>
+			</select>
+			<select id="penWidth">
+				<option value="1">細</option>
+				<option value="3">中</option>
+				<option value="5">太</option>
+			</select>
+			<input type="button" id="erase" value="全消し">
+			<input type="button" id="save" value="ギャラリーに追加">		
+		</p>
+	</div>
+	<div id="main">
+		<div id="CanvasDiv">
+    		<canvas id="mycanvas" width="1400px" height="800px">
+        		Canvasに対応したブラウザを用意してください。
+    		</canvas>
+    	</div>
+    	<div id="Chat">
+    		<table>
+    		<tr>
+    		<td><input type="text" id="message" placeholder="いまどうしてる?" autofocus>
+    		<button type="button" onclick="Submit()">
+    			<font size="3">チャットする</font>
+    		</button>
+    		</td>
+    		</tr>
+    		<tr><td><div id="log"><ul></ul></div></td></tr>
+    		</table>
+    	</div>
+    </div>
+    <div id="gallery"></div>
+    
+	<script>
+    	var ws = new WebSocket("ws://localhost:8080/websocket/DrawServlet");
+    	ws.onopen = function(){
+        	// 接続時の処理
+        	//データベースから回復処理を行う予定(以下が例である)
+    		//ws.send(363+","+254+","+362+","+250+","+"black"+","+ 20);
+    	};
+    	var canvas;
+    	var ctx;
+    	var isDrawing = false;
+    	var borderWith = 0;
+    	var scaleFactor = 1;
+    	//windowロード時の操作
+    	window.onload = function() {
+        	canvas = document.getElementById("mycanvas");
+        	if (!canvas || !canvas.getContext) return false
+        	ctx = canvas.getContext('2d');
+        	canvas.addEventListener("mousedown", function(e){
+            	isDrawing = true;
+        		startX = e.pageX - $(this).offset().left - borderWith;
+        		startY = e.pageY - $(this).offset().top - borderWith;
+        		startX /= scaleFactor;
+        		startY /= scaleFactor;
+        	});
+        	canvas.addEventListener("mousemove", function(e){
+				if(!isDrawing) return;
+				e.preventDefault();
+            	mouseX = e.pageX  - $(this).offset().left - borderWith;
+            	mouseY = e.pageY - $(this).offset().top - borderWith;
+            	mouseX /= scaleFactor;
+        		mouseY /= scaleFactor;            	
+                ws.send(startX+","+startY+","+mouseX+","+mouseY+","+$('#penColor').val()+","+$('#penWidth').val());//サーバーに送信
+        		startX = mouseX;
+        		startY = mouseY;
+        	});
+        	canvas.addEventListener("mouseup", function(){
+            	isDrawing = false;
+        	});
+        	canvas.addEventListener("mouseleave", function(){
+            	isDrawing = false;
+        	});
+    	}
+    	// 描画処理
+    	function draw(startX,startY,mouseX,mouseY,strokeStyle,lineWidth){
+        	ctx.beginPath();
+        	ctx.moveTo(startX, startY);
+        	ctx.lineTo(mouseX, mouseY);
+        	ctx.strokeStyle = strokeStyle;
+        	ctx.lineWidth = lineWidth;
+        	ctx.stroke();
+    	}    	
+    	//削除処理
+    	function Erase(){
+    		ctx.clearRect(0, 0, canvas.width, canvas.height);
+    	}
+    	//保存処理
+    	function Save(){
+			var img =$('<img>').attr({
+				width: (canvas.width*0.2),
+				height: (canvas.height*0.2),
+			 	src: canvas.toDataURL()
+			});
+			var link = $('<a>').attr({
+				href: canvas.toDataURL().replace('image/png','application/octet-stream'),
+				download: new Date().getTime() + '.png'
+			});
+			$('#gallery').append(link.append(img.addClass('thumbnail')));
+		}
+		//受信時の処理
+    	ws.onmessage = function(message){
+        	// 受信時の処理
+        	var value = message.data.split(",");
+        	draw(value[0], value[1], value[2], value[3],  value[4],  value[5]);
+    		if(value[0] == "delete"){
+    			Erase();
+    		}
+    		if(value[0] == "save"){
+    			Save();
+    		}
+    		if(value.length == 1 && value[0] !="save" && value[0] != "delete" ){
+    			$("#log ul").prepend( "<p><li>" + value[0] + "</li></p>");
+    		}
+    	};
+    	//削除機能
+    	$('#erase').click(function(){
+    		if (!confirm('本当に全消ししますか?')) return;
+    		ws.send("delete");
+    	});
+    	//保存機能
+    	$('#save').click(function(){
+    		ws.send("save");
+    	});
+    	
+    	// ダブルタップ(ダブルクリック)で二倍に拡大機能
+		Hammer($('#mycanvas')[0]).on("doubletap", function(e){
+    		scaleFactor = 3 - scaleFactor; // 2なら1、1なら2
+    		console.log("scaleFactor:" + scaleFactor);
+    		if(scaleFactor === 2){
+       		 var topLeftX = e.gesture.center.pageX - $(this).offset().left -(canvas.width/4);
+        	var topLeftY = e.gesture.center.pageY - $(this).offset().top -(canvas.height/4);
+        	if(topLeftX < 0){
+           		topLeftX = 0;
+       		}else if(topLeftX > canvas.width/2){
+            	topLeftX = canvas.width/2;
+        	}
+        	if(topLeftY < 0){
+            	topLeftY = 0;
+        	}else if(topLeftY > canvas.height/2){
+            	topLeftY = canvas.height/2;
+        	}
+
+        	var transformStyle = 'scale(%{scale}) translate(%{tx}px, %{ty}px)';
+        	transformStyle = transformStyle.replace('%{scale}', scaleFactor);
+        	transformStyle = transformStyle.replace('%{tx}', -topLeftX);
+        	transformStyle = transformStyle.replace('%{ty}', -topLeftY);
+        	$(this).css('transform', transformStyle);
+
+    		}else{
+        		$(this).css('transform', '');
+    		}
+		});
+		// チャット機能
+		function Submit(){
+			if($("#message").val()) ws.send($("#message").val()); //メッセージを送信
+    	}
+	</script>
+	
+</body>
+</html>

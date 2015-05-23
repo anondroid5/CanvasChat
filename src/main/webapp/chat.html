@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>お絵かきチャット</title>
+		<link rel="shortcut icon" href="./img/logo/logo.png">
+		<link rel="stylesheet" href="./css/chat.css" type="text/css">
+		<link rel="stylesheet" href="./css/farbtastic.css" type="text/css">
+		<link rel="stylesheet" href="./css/droppy.css" type="text/css">
+		<link rel="stylesheet" href="./css/jquery-ui.min.css">	
+		<script type="text/javascript" src="./js/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="./js/farbtastic.js"></script>
+		<script type="text/javascript" src="./js/colorPicker.js"></script>
+		<script type="text/javascript" src="./js/canvas.js"></script>
+		<script type="text/javascript" src="./js/layer.js"></script>
+		<script type="text/javascript" src="./js/layerManager.js"></script>
+		<script type="text/javascript" src="./js/tools/cursor.js"></script>
+		<script type="text/javascript" src="./js/tool.js"></script>
+		<script type="text/javascript" src="./js/socket.js"></script>
+		<script type="text/javascript" src="./js/storage.js"></script>
+		<script type="text/javascript" src="./js/t.js"></script>		
+		<script type="text/javascript" src="./js/t.setter.js"></script>		
+		<script type="text/javascript" src="./js/zoomInfo.js"></script>		
+		<script type="text/javascript" src="./js/chat.js"></script>
+		<script type="text/javascript" src="./js/exportCanvas.js"></script>
+		<script type="text/javascript" src="./js/exportChat.js"></script>
+		<script type="text/javascript" src="./js/grid.js"></script>
+		<script type="text/javascript" src="./js/tools/bomb.js"></script>
+		<script type="text/javascript" src="./js/tools/width/penWidth.js"></script>
+		<script type="text/javascript" src="./js/tools/width/penWidthManager.js"></script>
+		<script type="text/javascript" src="./js/jquery.droppy.js"></script>
+		<script type="text/javascript" src="./js/ion.sound.js"></script>
+		<script type="text/javascript" src="./js/set.sound.js"></script>		
+		<script type="text/javascript">
+				new Tool();
+				$(function(){
+					$('#nav').droppy();
+					new GridManager();
+					new ColorPicker();
+					layer = new LayerManager();
+					new Storage();
+					new Chat();
+					//正規ログインチェック
+					if(new Storage().get('loginName') == '' || new Storage().get('loginRoom') == ''){
+						location.href = './index.html';
+					}
+					/**
+					 * レイヤー3枚追加
+					 */
+					for(i = 0; i < 3; i++){
+						layer.add();
+					}
+					layer.setActiveLayer(0);
+
+					socket = new Socket(function(){
+						socket.login(new Storage().get('loginName'), new Storage().get('loginRoom'));
+					});
+					//終了時イベント
+					$(window).bind('beforeunload', function(e){
+						new Socket().logout();
+						new Socket().close();
+					});
+					new PenWidthManager();
+					//CSS調整
+					$(window).resize(reconfcss);
+					reconfcss();
+
+					new Tool().setup();
+				});
+				function reconfcss(){
+					buttonWidth = $('#messageSubmit').width() * 2;
+					buttonHeight = $('#messageSubmit').height();
+					textareaWidth = $('#messages').width();
+					textboxWidth = textareaWidth - buttonWidth;
+					textboxHeight = $('#message').height();
+					participantListHeight = $('#participantList').height();
+
+					textareaHeight = participantListHeight - ((textboxHeight > buttonHeight) ? textboxHeight : buttonHeight)
+					$('#message').css('width', textboxWidth);
+					$('#messages').css('height', textareaHeight);
+					$('#chatArea').css('margin-left', $('#canvas').offset().left);
+				}
+		</script>
+		<!-- 各種機能ツール(順番関係あり) -->
+		<script type="text/javascript" src="./js/tools/default.js"></script>
+		<script type="text/javascript" src="./js/tools/line.js"></script>
+		<script type="text/javascript" src="./js/tools/erase.js"></script>
+		<script type="text/javascript" src="./js/tools/spoit.js"></script>
+		<script type="text/javascript" src="./js/tools/zoomin.js"></script>
+		<script type="text/javascript" src="./js/tools/zoomout.js"></script>
+		<script type="text/javascript" src="./js/pluginWindow.js"></script>
+	</head>
+	<body>
+		<nav>
+			<div >
+				<ul id="nav">
+					<li><a href="#">ファイル</a>
+						<ul>
+							<li><a href="#" id="menuSaveIllust">画像として保存</a></li>
+							<li><a href="#" id="menuSaveChat">チャットログを保存</a></li>
+						</ul>
+					</li>
+					<li><a href="#">ツール</a>
+						<ul id="toolsMenu">
+							<li><a href="#" id="menuBombButton">全消し</a></li>
+						</ul>
+					</li>
+					<li><a href="#">告知</a>
+						<ul>
+							<li><a href="#" id="menuTwitter">Twitterで告知する</a></li>
+							<li><a href="#" id="menuFacebook">Facebookで告知する</a></li>
+						</ul>
+					</li>
+					<li><a href="#">退室</a>
+						<ul>
+							<li><a href="#" id="menuLogout">退室する</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<br>
+		<div id="pictChat">
+			<div id="pictArea">
+				<div id="leftPain">
+					<div id="color">
+						<div class="titleBar">カラー</div>
+						<div class="frame">
+							<div id="colorPicker"></div>
+							<form>
+								<div class="colorSliderGroup"><span class="colorTitle">R:</span><div class="colorSlider"  id="rSlider"></div><span id="rNum">255</span></div>
+								<div class="colorSliderGroup"><span class="colorTitle">G:</span><div class="colorSlider"  id="gSlider"></div><span id="gNum">255</span></div>
+								<div class="colorSliderGroup"><span class="colorTitle">B:</span><div class="colorSlider"  id="bSlider"></div><span id="bNum">255</span></div>
+								<div class="colorSliderGroup"><span class="colorTitle">A:</span><div class="colorSlider" id="alphaSlider"></div><span id="alphaNum">100</span>%</div>
+								<!-- アルファ値:
+								<div id="alphaSlider"></div>
+								<span id="alphaNum">100</span>%<br> -->
+								<table id="colorSelect" border="1">
+									<tr><td class="colorCell" id="defaultColor"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td></tr>
+									<tr><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td></tr>
+									<tr><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td><td class="colorCell"></td></tr>
+								</table>
+								<table border="1">
+								    <tr><td id="currentColor"></td></tr>
+								</table>
+							</form>
+							<br style="clear: left;">
+						</div>
+					</div>
+					<div id="tools">
+						<div class="titleBar">ツール</div>
+						<div class="frame">
+							<table id="toolSelect" border="1"></table>
+							<form id="toolConfig">
+								<div>
+									<label><input name="enablePentab" id="enablePentab" type="checkbox">筆圧検知を有効にする</label>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div>
+						<div class="titleBar">ペンの太さ</div>
+						<div class="frame">
+							<br>
+							<div id="penWidth"></div>
+							<br>
+							<div id="penWidthItems"></div>
+							<br style="clear: left">
+						</div>
+					</div>
+					<div>
+						<div class="titleBar">グリッド</div>
+						<div class="frame">
+							<form>
+								<div>
+									<label><input type="checkbox" id="enableGrid">グリッドを有効にする</label>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div id="centerRightPain">
+					<div id="centerPain">
+						<div id="canvas">
+							<div id="bottomLayer"></div>
+							<div id="mainLayer"></div>
+							<div id="topLayer"></div>
+						</div>
+					</div>
+					<div id="rightPain">
+						<div id="layer">
+							<div class="titleBar">レイヤー</div>
+							<div class="frame">
+								<table id="layerSelect" border="1" style="width:100%">
+								</table>
+							</div>
+						</div>
+						<div id="status">
+							<div class="titleBar">ステータス</div>
+							<div class="frame">
+								<div id="connectStatus">接続 : <span id="connection">切断</span></div>
+								<div id="wacomPlugin">筆圧 : <span id="enableWacomPlugin">未検出</span>
+									<span id="WacomPlugin">
+										<object id="Wacom" type="application/x-wacom-tablet" width="1" height="1"></object>
+									</span>
+								</div>
+								<div id="webStorage">DB : <span id="enableWebStorage">Cookie</span></div>
+							</div>
+						</div>
+						<div id="bomb">
+							<div class="titleBar">全消去</div>
+							<div class="frame">
+								<div id="bombButton" style="text-align:center;">
+									使用注意<br>
+									<img id="bombButtonIcon" src="./icon/zenkesi.png" alt="bomb">
+									<div id="bombDialog" style="text-align:center;"></div>
+								</div>
+							</div>
+						</div>
+						<div id="undo">
+							<div class="titleBar">やり直し</div>
+							<div class="frame">
+								<div id="undoButton" style="text-align:center;">
+									<input type="submit" value="戻る" name="back"> <input type="submit" value="進む" name="proceed">
+								</div>
+							</div>
+						</div>
+						<div id="plugin">
+						</div>
+					</div>
+				</div>
+			</div>
+			<br style="clear:left;">
+			<hr>
+			<div id="chatArea"><!--chat area  -->
+				<form id="chatForm" action="#" method="POST">
+					<div id="messageArea" style="float: left">
+						<textarea readonly id="messages"></textarea><br>
+						<input type="text" id="message" name="message"><input type="submit" value="送信" id="messageSubmit">
+					</div>
+					<select size="10" id="participantList"><option value="参加者なし">参加者なし</option></select>
+				</form>
+			</div>
+		</div>
+		<script type="text/javascript" src="./js/plugins/trace.js"></script>
+	</body>
+</html>
