@@ -23,14 +23,14 @@ http://mvnrepository.com/
 
  - Tool Force
  - ColorPicker
+ - ZoomOut
+ - ZoomIn
  - Layer
  - Chat
  - Grid
  - Draw
  - Erase
  - Trace
- - ZoomIn
- - ZoomOut
 
 #Ideas
     いつも一人でやっていると、失敗のリスクが高くなる。そして、成長の可能性が低くなる。 
