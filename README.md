@@ -31,6 +31,8 @@ http://mvnrepository.com/
         自分以外の人は有能であり、正しいことをすると信じよう。そおうすれば、仕事を任せることができる。
         
     ソフトウェアを書くときには警戒する必要はない。チームメイトは仲間であり、競争相手ではない。
+    
+                                                                                        Google Team Geek
 
 #Author
 Fumihiko Akagi
