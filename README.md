@@ -12,6 +12,8 @@ Apache Maven 3.0.2
 
 http://mvnrepository.com/
 
+#Idea
+
 #Author
 Fumihiko Akagi
 
