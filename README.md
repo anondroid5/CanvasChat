@@ -32,7 +32,7 @@ http://mvnrepository.com/
         
     ソフトウェアを書くときには警戒する必要はない。チームメイトは仲間であり、競争相手ではない。
     
-                                                                                        Google Team Geek
+                                                                                                Google Team Geek
 
 #Author
 Fumihiko Akagi
