@@ -19,6 +19,14 @@ http://mvnrepository.com/
 ###Chat Interface
 <img src="./Raw/images/chat.png" alt="chat">
 
+###Functions
+
+ - Layer
+ - Chat
+ - ColorPicker
+ - Grid
+ - Tool Force
+
 #Ideas
     いつも一人でやっていると、失敗のリスクが高くなる。そして、成長の可能性が低くなる。 
     私が協調したいのは、孤高のプログラミング職人はいないということである。
