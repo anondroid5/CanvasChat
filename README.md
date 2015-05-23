@@ -3,10 +3,6 @@ WebSocket
 
 HTML5 Canvas
 
-<img src="./Raw/images/index.png" alt="index">
-
-<img src="./Raw/images/chat.png" alt="chat">
-
 #Environment
 Java8 (jdk1.8.0_05)
 
@@ -15,6 +11,13 @@ Apache Tomcat 7.0
 Apache Maven 3.0.2
 
 http://mvnrepository.com/
+
+#Details
+###Login Interface
+<img src="./Raw/images/index.png" alt="index">
+
+###Chat Interface
+<img src="./Raw/images/chat.png" alt="chat">
 
 #Ideas
     いつも一人でやっていると、失敗のリスクが高くなる。そして、成長の可能性が低くなる。 
