@@ -21,11 +21,13 @@ http://mvnrepository.com/
 
 ###Functions
 
+ - Tool Force
+ - ColorPicker
  - Layer
  - Chat
- - ColorPicker
  - Grid
- - Tool Force
+ - Draw
+ - Erase
 
 #Ideas
     いつも一人でやっていると、失敗のリスクが高くなる。そして、成長の可能性が低くなる。 
