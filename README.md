@@ -55,8 +55,5 @@ http://mvnrepository.com/
 Fumihiko Akagi
 
 #Copyright
-###!!使用する際はライセンスを読んで使用してください!!
-    本ソフトウェアは、独断と個人による利用を固く禁じます。
-    チームメイトを大切にできる方、一緒に協力して開発してくださる方に限り利用を許可します。
  ***
     Copyright (c) 2013 Fumihiko Akagi
