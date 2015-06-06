@@ -1,7 +1,7 @@
 # CanvasChat
+[![Language](http://img.shields.io/badge/language-java-orange.svg?style=flat)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+[![Language](https://img.shields.io/badge/HTML5-Canvas-blue.svg?style=flat)](http://www.html5.jp/canvas)
 WebSocket
-
-HTML5 Canvas
 
 # Requirements
 * Java >= 1.8
