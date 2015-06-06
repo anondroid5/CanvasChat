@@ -21,7 +21,7 @@ http://mvnrepository.com/
 
 ###Functions
 
- - Tool Force
+ - ToolForce
  - ColorPicker
  - ZoomOut
  - ZoomIn
