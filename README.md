@@ -40,4 +40,4 @@ Syoki Mizuno
 Fumihiro Oya
 
 #Copyright
-    Copyright (c) 2014 Fumihiko Akagi Syoki Mizuno Fumihiro Oya
+    Copyright (c) 2014 Fumihiko Akagi, Syoki Mizuno, Fumihiro Oya
